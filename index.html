@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" href="https://image.flaticon.com/icons/png/128/1177/1177394.png">
+    <link href="https://fonts.googleapis.com/css?family=Fredoka+One" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bingo.css">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script src="/js/bingo.js"></script>
+
+    <title>Bingo Bingo</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top text-center">
+        <a class="navbar-brand" href="#">
+            <img src="https://image.flaticon.com/icons/png/128/1177/1177394.png" width="30" height="30" class="d-inline-block align-bottom" alt="R">
+            &nbsp;Bingo Bingo
+        </a>
+    </nav>
+
+    <div class="container-fluid text-center bg-dark"></div>
+
+    <div id="alert_modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Someting bad happended！！</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="clearCache" type="button" class="btn btn-danger">Clear cache and reload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bingo_modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">The winner is ...</h5>
+                </div>
+                <div class="modal-body text-center">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Got it！</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings_modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">Settings</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="bingoSettings">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="box_x">Number of box for X</label>
+                                <input type="number" min="4" class="form-control form-control-sm" id="box_x" name="xBoxCount" value="8">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="box_y">Number of box for Y</label>
+                                <input type="number" min="3" class="form-control form-control-sm" id="box_y" name="yBoxCount" value="7">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="turns_min">Number of turns (MIN)</label>
+                                <input type="number" min="3" class="form-control form-control-sm" id="turns_min" name="turnsMin" value="4">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="turns_max">Number of turns (MAX)</label>
+                                <input type="number" min="4" class="form-control form-control-sm" id="turns_max" name="turnsMax" value="8">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="bg_color">Box color</label>
+                                <input type="color" class="form-control form-control-sm" id="bg_color" name="itemBoxBgColor" value="#17a2b8">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="border_color">Box border color</label>
+                                <input type="color" class="form-control form-control-sm" id="border_color" name="itemBoxBorderColor" value="#ffffff">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="border_width">Box border width</label>
+                                <input type="number" min="0" class="form-control form-control-sm" id="border_width" name="itemBoxBorderWidth" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="highlight_bg_color">Highlight box color</label>
+                                <input type="color" class="form-control form-control-sm" id="highlight_bg_color" name="itemBoxHighlightBgColor" value="#031A1D">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="highlight_border_color">Highlight box border color</label>
+                                <input type="color" class="form-control form-control-sm" id="highlight_border_color" name="itemBoxHighlightBorderColor" value="#ffffff">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="highlight_border_width">Highlight Box border width</label>
+                                <input type="number" min="0" class="form-control form-control-sm" id="highlight_border_width" name="itemBoxHighlightBorderWidth" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="item_list">Item list (A item per line)&nbsp;&nbsp;[<span id="item_list_count"></span>]</label>
+                                <textarea class="form-control" id="item_list" name="itemList" rows="5">Avocado
+Banana
+Carambola
+Durian
+Elderberry
+Figs
+Guava
+Honeydew Melon
+Indian Prune
+Jackfruit
+Kiwifruit
+Lychee
+Mango
+Nectarine
+Orange
+Pitaya
+Quince
+Rambutan
+Sugar-Apple
+Tangerine
+Ugli fruit
+Voavanga
+Watermelon
+Xigua
+Yangmei
+Zuchinni</textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="settings_default" type="button" class="btn btn-warning" data-dismiss="modal">Reset to defaut</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="settings_save" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<audio id="bg_audio" controls="controls">-->
+    <!--    <source src="/sound/dolly.mp3" type="audio/mpeg">-->
+    <!--    Your browser does not support the audio element.-->
+    <!--</audio>-->
+
+    <video loop id="myVideo">
+      <source src="/sound/v1.mp4" type="video/mp4">
+    </video>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+@import url(//fonts.googleapis.com/earlyaccess/cwtexyen.css);
+
+html,
+body {
+    height: 100%;
+    font-family: 'Fredoka One', 'cwTeXYen', cursive;
+}
+
+.navbar {
+    border-bottom: 1px dotted white;
+}
+
+.container-fluid {
+    height: 100%;
+    padding-top: 67px;
+    font-size: 0px;
+}
+
+.item-box {
+    display: inline-block;
+    margin: 0px 0px;
+    padding: 10px;
+    color: white;
+    font-size: 24px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+/* Style the video: 100% width and height to cover the entire window */
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+    z-index: -99;
+}
