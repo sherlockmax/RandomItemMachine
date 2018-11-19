@@ -1,9 +1,116 @@
+// var tag = document.createElement('script');
+
+// tag.src = "https://www.youtube.com/iframe_api";
+// var firstScriptTag = document.getElementsByTagName('script')[0];
+// firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
 $(document).ready(function() {
     try {
+        // Create Base64 Object
+        var Base64 = {
+            _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+            encode: function(e) {
+                var t = "";
+                var n, r, i, s, o, u, a;
+                var f = 0;
+                e = Base64._utf8_encode(e);
+                while (f < e.length) {
+                    n = e.charCodeAt(f++);
+                    r = e.charCodeAt(f++);
+                    i = e.charCodeAt(f++);
+                    s = n >> 2;
+                    o = (n & 3) << 4 | r >> 4;
+                    u = (r & 15) << 2 | i >> 6;
+                    a = i & 63;
+                    if (isNaN(r)) { u = a = 64 }
+                    else if (isNaN(i)) { a = 64 } t = t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a)
+                }
+                return t
+            },
+            decode: function(e) {
+                var t = "";
+                var n, r, i;
+                var s, o, u, a;
+                var f = 0;
+                e = e.replace(/[^A-Za-z0-9+/=]/g, "");
+                while (f < e.length) {
+                    s = this._keyStr.indexOf(e.charAt(f++));
+                    o = this._keyStr.indexOf(e.charAt(f++));
+                    u = this._keyStr.indexOf(e.charAt(f++));
+                    a = this._keyStr.indexOf(e.charAt(f++));
+                    n = s << 2 | o >> 4;
+                    r = (o & 15) << 4 | u >> 2;
+                    i = (u & 3) << 6 | a;
+                    t = t + String.fromCharCode(n);
+                    if (u != 64) { t = t + String.fromCharCode(r) }
+                    if (a != 64) { t = t + String.fromCharCode(i) }
+                }
+                t = Base64._utf8_decode(t);
+                return t
+            },
+            _utf8_encode: function(e) {
+                e = e.replace(/rn/g, "n");
+                var t = "";
+                for (var n = 0; n < e.length; n++) {
+                    var r = e.charCodeAt(n);
+                    if (r < 128) { t += String.fromCharCode(r) }
+                    else if (r > 127 && r < 2048) {
+                        t += String.fromCharCode(r >> 6 | 192);
+                        t += String.fromCharCode(r & 63 | 128)
+                    }
+                    else {
+                        t += String.fromCharCode(r >> 12 | 224);
+                        t += String.fromCharCode(r >> 6 & 63 | 128);
+                        t += String.fromCharCode(r & 63 | 128)
+                    }
+                }
+                return t
+            },
+            _utf8_decode: function(e) {
+                var t = "";
+                var n = 0;
+                var r = c1 = c2 = 0;
+                while (n < e.length) {
+                    r = e.charCodeAt(n);
+                    if (r < 128) {
+                        t += String.fromCharCode(r);
+                        n++
+                    }
+                    else if (r > 191 && r < 224) {
+                        c2 = e.charCodeAt(n + 1);
+                        t += String.fromCharCode((r & 31) << 6 | c2 & 63);
+                        n += 2
+                    }
+                    else {
+                        c2 = e.charCodeAt(n + 1);
+                        c3 = e.charCodeAt(n + 2);
+                        t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+                        n += 3
+                    }
+                }
+                return t
+            }
+        }
+
+        var player
         var settings = {}
         var timesPerRound = 0
         var boxLocation = { x: 1, y: 1 }
         var vector = { x: 1, y: 0 }
+
+        function GetURLParameter(sParam, url) {
+            var sPageURL = url.split("?")[1]
+            if (!url || url == "") {
+                sPageURL = window.location.search.substring(1)
+            }
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
 
         function removeActive(itemBox) {
             itemBox.css("background-color", settings.itemBoxBgColor)
@@ -18,7 +125,7 @@ $(document).ready(function() {
         function DrawTable() {
             $('.container-fluid').html("")
             var itemBoxWidth = $(".container-fluid").width() / (settings.xBoxCount)
-            var itemBoxHeight = ($(".container-fluid").height() / (settings.yBoxCount)) - 2
+            var itemBoxHeight = ($(".container-fluid").height() / (settings.yBoxCount))
             timesPerRound = 0
             for (y = 1; y <= settings.yBoxCount; y++) {
                 for (x = 1; x <= settings.xBoxCount; x++) {
@@ -29,6 +136,7 @@ $(document).ready(function() {
                     if (x == 1 || x == settings.xBoxCount || y == 1 || y == settings.yBoxCount) {
                         itemBox.css("background-color", settings.itemBoxBgColor)
                         itemBox.css("border", settings.itemBoxBorderWidth + "px solid " + settings.itemBoxBorderColor)
+                        itemBox.css("cursor", "pointer")
                         timesPerRound++
                     }
                     else {
@@ -48,6 +156,18 @@ $(document).ready(function() {
 
             var settingBox = $("#itemBox_" + (settings.xBoxCount - 2) + "_" + (settings.yBoxCount - 1))
             settingBox.addClass("btn btn-success text-white").attr("id", "open-settings").text("Settings")
+
+            var soundBox = $("#itemBox_" + (settings.xBoxCount - 3) + "_" + (settings.yBoxCount - 1))
+            soundBox.addClass("btn btn-primary text-white").attr("id", "toggle-sound").text("Sound")
+
+            var playerTop = 57 + itemBoxHeight
+            var playerLeft = itemBoxWidth
+            var playerWidth = itemBoxWidth * (settings.xBoxCount - 2)
+            var playerHeight = itemBoxHeight * (settings.yBoxCount - 2)
+            $("#player").css("top", playerTop + "px")
+            $("#player").css("left", playerLeft + "px")
+            $("#player").css("width", playerWidth + "px")
+            $("#player").css("height", playerHeight + "px")
 
             PutItem()
         }
@@ -151,7 +271,7 @@ $(document).ready(function() {
                 $('#bingo_modal').find(".modal-body").html("")
                 $('#bingo_modal').find(".modal-body").append(itemBox)
                 $('#bingo_modal').modal("show")
-                $('#myVideo')[0].pause()
+                player.pauseVideo()
                 isSpinning = false
             }
         }
@@ -162,25 +282,9 @@ $(document).ready(function() {
                 obj[item.name] = item.value
             })
             var itemListText = obj["itemList"]
-            obj["itemList"] = itemListText.split("\n")
+            obj["itemList"] = itemListText.split("\r\n")
 
             return obj
-        }
-
-        function setCookie(key, obj) {
-            var objStr = JSON.stringify(obj)
-            Cookies.set(key, objStr)
-        }
-
-        function getCookie(key) {
-            var objStr = Cookies.get(key)
-
-            if (objStr) {
-                return JSON.parse(objStr)
-            }
-            else {
-                return false
-            }
         }
 
         function getRand(min, max) {
@@ -208,9 +312,7 @@ $(document).ready(function() {
                 }
 
                 console.log(settings, "randRound", randRound, "randSeed", randSeed, "timesPerRound", timesPerRound, "breakTimes", breakTimes)
-
-                //$('#bg_audio').trigger("play")
-                $('#myVideo')[0].play()
+                player.playVideo()
                 MakeAWish(result, breakTimes)
             }
         })
@@ -231,14 +333,12 @@ $(document).ready(function() {
 
         $("body").on("click", "#settings_save", function() {
             settings = transFormToObj($("#bingoSettings"))
-            setCookie("settings", settings)
-            DrawTable()
-            $("#settings_modal").modal("hide")
+            var data = encodeURIComponent(Base64.encode(JSON.stringify(settings)))
+            location.href = "/?data=" + data
         })
 
         $("body").on("click", "#settings_default", function() {
-            Cookies.remove("settings")
-            location.reload()
+            location.href = "/"
         })
 
         $("body").on("click", ".btnEditBoxText", function() {
@@ -254,10 +354,9 @@ $(document).ready(function() {
             var itemListCount = $('#item_list').val().split("\n").length
             updateItemListCount(itemListCount)
         })
-        
+
         $("body").on("click", "#clearCache", function() {
-            Cookies.remove("settings")
-            location.reload()
+            location.href = "/"
         })
 
         $(".navbar-brand").click(function() {
@@ -273,11 +372,18 @@ $(document).ready(function() {
             DrawTable()
         })
 
-        settings = getCookie("settings")
-        console.log("Load settings (cookie): ", settings)
+        settings = GetURLParameter("data", "")
         if (!settings) {
             settings = transFormToObj($("#bingoSettings"))
-            console.log("Load settings (form): ", settings)
+            console.log("Load settings from [form]: ", settings)
+        }
+        else {
+            settings = JSON.parse(Base64.decode(decodeURIComponent(settings)))
+            settings.turnsMax = settings.tunsMax
+            settings.turnsMin = settings.tunsMin
+            delete settings.tunsMax
+            delete settings.tunsMin
+            console.log("Load settings from [?data=]: ", settings)
         }
 
         DrawTable()
@@ -288,11 +394,42 @@ $(document).ready(function() {
             backdrop: "static"
         })
 
-        $('#myVideo')[0].play()
-        setTimeout(function() {
-            $('#myVideo')[0].pause()
-        }, 2000)
+        function onYouTubeIframeAPIReady(vID) {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: vID,
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
 
+        function onPlayerReady() {
+            if (settings.bgVideoIsBlock == "NO") {
+                $(".container-fluid ").removeClass("bg-dark")
+            }
+            else {
+                $(".container-fluid ").addClass("bg-dark")
+            }
+        }
+        
+        function onPlayerStateChange(event){
+            if (event.data == YT.PlayerState.STOP && isSpinning) {
+                player.playVideo()
+            }
+        }
+
+        setTimeout(function() {
+            var vID = GetURLParameter("v", settings.bgVideo)
+            if (!vID) {
+                vID = "U042f4kRa0I"
+            }
+
+            console.log(settings.bgVideo, GetURLParameter("v", settings.bgVideo), vID)
+            onYouTubeIframeAPIReady(vID)
+        }, 1000)
     }
     catch (err) {
         console.log(err)

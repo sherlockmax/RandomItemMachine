@@ -12,7 +12,7 @@ body {
 
 .container-fluid {
     height: 100%;
-    padding-top: 67px;
+    padding: 57px 0px 0px 0px;
     font-size: 0px;
 }
 
@@ -23,15 +23,12 @@ body {
     color: white;
     font-size: 24px;
     vertical-align: middle;
-    cursor: pointer;
 }
 
 /* Style the video: 100% width and height to cover the entire window */
-#myVideo {
+#player {
     position: fixed;
     right: 0;
     bottom: 0;
-    min-width: 100%; 
-    min-height: 100%;
     z-index: -99;
 }
