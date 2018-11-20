@@ -1,9 +1,3 @@
-// var tag = document.createElement('script');
-
-// tag.src = "https://www.youtube.com/iframe_api";
-// var firstScriptTag = document.getElementsByTagName('script')[0];
-// firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 $(document).ready(function() {
     try {
         // Create Base64 Object
@@ -151,14 +145,14 @@ $(document).ready(function() {
             boxLocation = { x: 1, y: 1 }
             vector = { x: 1, y: 0 }
 
-            var spinBox = $("#itemBox_" + (settings.xBoxCount - 1) + "_" + (settings.yBoxCount - 1))
-            spinBox.addClass("btn btn-danger text-white").attr("id", "spin").text("Spinning！")
+            // var spinBox = $("#itemBox_" + (settings.xBoxCount - 1) + "_" + (settings.yBoxCount - 1))
+            // spinBox.addClass("btn btn-danger text-white").attr("id", "spin").text("Spinning！")
 
-            var settingBox = $("#itemBox_" + (settings.xBoxCount - 2) + "_" + (settings.yBoxCount - 1))
-            settingBox.addClass("btn btn-success text-white").attr("id", "open-settings").text("Settings")
+            // var settingBox = $("#itemBox_2_" + (settings.yBoxCount - 1))
+            // settingBox.addClass("btn btn-success text-white").attr("id", "open-settings").text("Settings")
 
-            var soundBox = $("#itemBox_" + (settings.xBoxCount - 3) + "_" + (settings.yBoxCount - 1))
-            soundBox.addClass("btn btn-primary text-white").attr("id", "toggle-sound").text("Sound")
+            // var soundBox = $("#itemBox_" + (settings.xBoxCount - 1) + "_2")
+            // soundBox.addClass("btn btn-primary text-white").attr("id", "toggle-sound").text("Sound")
 
             var playerTop = 57 + itemBoxHeight
             var playerLeft = itemBoxWidth
@@ -399,9 +393,15 @@ $(document).ready(function() {
                 height: '390',
                 width: '640',
                 videoId: vID,
+                playerVars: {
+                    'controls': 0,
+                    'loop': 1,
+                    'modestbranding': 1,
+                    'showinfo': 0,
+                    'start': 3,
+                },
                 events: {
                     'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
                 }
             });
         }
@@ -415,12 +415,6 @@ $(document).ready(function() {
             }
         }
         
-        function onPlayerStateChange(event){
-            if (event.data == YT.PlayerState.STOP && isSpinning) {
-                player.playVideo()
-            }
-        }
-
         setTimeout(function() {
             var vID = GetURLParameter("v", settings.bgVideo)
             if (!vID) {
