@@ -27,30 +27,42 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top text-center">
         <a class="navbar-brand" href="#">
-            <img src="https://image.flaticon.com/icons/png/128/1177/1177394.png" width="30" height="30" class="d-inline-block align-bottom" alt="R">
-            &nbsp;Bingo Bingo <span class="text-muted">v18.11.19</span>
+            <img src="https://image.flaticon.com/icons/png/128/1177/1177394.png" width="30" height="30" class="d-inline-block align-bottom"
+                alt="R">
+            &nbsp;Bingo Bingo&nbsp;&nbsp;<span class="text-muted">v18.11.22</span>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a id="open-settings" class="nav-link" href="#">Settings</a>
+                    <a id="open-settings" class="nav-link text-info" href="#">Settings</a>
                 </li>
                 <li class="nav-item">
-                    <a id="sound" class="nav-link" href="#">Sound</a>
+                    <a id="sound_status" class="nav-link text-info" href="#">Sound OFF</a>
+                </li>
+                <li class="nav-item">
+                    <a id="shuffle_item" class="nav-link text-info" href="#">Shuffle Item</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a id="spin" class="nav-link" href="#">Spinning</a>
+                    <a id="spin" class="nav-link text-warning" href="#">Spinning</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container-fluid text-center bg-dark"></div>
+    <div class="container-fluid text-center bg-dark">
+        <div class="loading">
+            <div class="item">
+                <img src="https://cdn-images-1.medium.com/max/1600/0*U2RiSXJx8U9K4thZ.gif">
+            </div>
+        </div>
+        <div class="bingoTable"></div>
+    </div>
 
     <div id="alert_modal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -95,49 +107,71 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="box_x">Number of box for X</label>
-                                <input type="number" min="4" class="form-control form-control-sm" id="box_x" name="xBoxCount" value="8">
+                                <input type="number" min="4" class="form-control form-control-sm" id="box_x" name="xBoxCount"
+                                    value="8">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="box_y">Number of box for Y</label>
-                                <input type="number" min="3" class="form-control form-control-sm" id="box_y" name="yBoxCount" value="7">
+                                <input type="number" min="3" class="form-control form-control-sm" id="box_y" name="yBoxCount"
+                                    value="7">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="turns_min">Number of turns (MIN)</label>
-                                <input type="number" min="3" class="form-control form-control-sm" id="turns_min" name="turnsMin" value="4">
+                                <input type="number" min="3" class="form-control form-control-sm" id="turns_min" name="turnsMin"
+                                    value="4">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="turns_max">Number of turns (MAX)</label>
-                                <input type="number" min="4" class="form-control form-control-sm" id="turns_max" name="turnsMax" value="8">
+                                <input type="number" min="4" class="form-control form-control-sm" id="turns_max" name="turnsMax"
+                                    value="8">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="text_color">Text color</label>
+                                <input type="color" class="form-control form-control-sm" id="text_color" name="textColor"
+                                    value="#ffffff">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="text_size">Text size</label>
+                                <input type="number" min="9" class="form-control form-control-sm" id="text_size" name="textSize"
+                                    value="24">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="bg_color">Box color</label>
-                                <input type="color" class="form-control form-control-sm" id="bg_color" name="itemBoxBgColor" value="#17a2b8">
+                                <input type="color" class="form-control form-control-sm" id="bg_color" name="itemBoxBgColor"
+                                    value="#17a2b8">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="border_color">Box border color</label>
-                                <input type="color" class="form-control form-control-sm" id="border_color" name="itemBoxBorderColor" value="#ffffff">
+                                <input type="color" class="form-control form-control-sm" id="border_color" name="itemBoxBorderColor"
+                                    value="#ffffff">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="border_width">Box border width</label>
-                                <input type="number" min="0" class="form-control form-control-sm" id="border_width" name="itemBoxBorderWidth" value="0">
+                                <input type="number" min="0" class="form-control form-control-sm" id="border_width"
+                                    name="itemBoxBorderWidth" value="0">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="highlight_bg_color">Highlight box color</label>
-                                <input type="color" class="form-control form-control-sm" id="highlight_bg_color" name="itemBoxHighlightBgColor" value="#031A1D">
+                                <input type="color" class="form-control form-control-sm" id="highlight_bg_color" name="itemBoxHighlightBgColor"
+                                    value="#031A1D">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="highlight_border_color">Highlight box border color</label>
-                                <input type="color" class="form-control form-control-sm" id="highlight_border_color" name="itemBoxHighlightBorderColor" value="#ffffff">
+                                <input type="color" class="form-control form-control-sm" id="highlight_border_color"
+                                    name="itemBoxHighlightBorderColor" value="#ffffff">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="highlight_border_width">Highlight Box border width</label>
-                                <input type="number" min="0" class="form-control form-control-sm" id="highlight_border_width" name="itemBoxHighlightBorderWidth" value="0">
+                                <input type="number" min="0" class="form-control form-control-sm" id="highlight_border_width"
+                                    name="itemBoxHighlightBorderWidth" value="0">
                             </div>
                         </div>
                         <div class="form-row">
@@ -174,32 +208,29 @@ Zuchinni</textarea>
                         <div class="form-row">
                             <div class="form-group col-md-8">
                                 <label for="bg_video">Background Video (must from Youtube url)</label>
-                                <input type="text" class="form-control form-control-sm" id="bg_video" name="bgVideo" value="https://www.youtube.com/watch?v=U042f4kRa0I">
+                                <input type="text" class="form-control form-control-sm" id="bg_video" name="bgVideo"
+                                    value="https://www.youtube.com/watch?v=BahtnT13vH8">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="is_block_video">is Hide Background (YES/NO)</label>
-                                <input type="text" class="form-control form-control-sm" id="is_block_video" name="bgVideoIsBlock" value="NO">
+                                <select class="form-control form-control-sm" id="is_block_video" name="bgVideoIsBlock">
+                                    <option value="YES">YES</option>
+                                    <option value="NO">NO</option>
+                                </select>
                             </div>
                         </div>
+                        <input type="hidden" name="sound" value="on">
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button id="settings_default" type="button" class="btn btn-warning" data-dismiss="modal">Reset to defaut</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="settings_default" type="button" class="btn btn-warning mr-auto" data-dismiss="modal">Reset
+                        to defaut</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button id="settings_save" type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!--<audio id="bg_audio" controls="controls">-->
-    <!--    <source src="/sound/dolly.mp3" type="audio/mpeg">-->
-    <!--    Your browser does not support the audio element.-->
-    <!--</audio>-->
-
-    <!--<video loop id="myVideo">-->
-    <!--  <source src="/sound/v1.mp4" type="video/mp4">-->
-    <!--</video>-->
 
     <div id="player"></div>
 </body>

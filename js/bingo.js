@@ -1,9 +1,9 @@
-$(document).ready(function() {
+$(document).ready(function () {
     try {
         // Create Base64 Object
         var Base64 = {
             _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-            encode: function(e) {
+            encode: function (e) {
                 var t = "";
                 var n, r, i, s, o, u, a;
                 var f = 0;
@@ -21,7 +21,7 @@ $(document).ready(function() {
                 }
                 return t
             },
-            decode: function(e) {
+            decode: function (e) {
                 var t = "";
                 var n, r, i;
                 var s, o, u, a;
@@ -42,7 +42,7 @@ $(document).ready(function() {
                 t = Base64._utf8_decode(t);
                 return t
             },
-            _utf8_encode: function(e) {
+            _utf8_encode: function (e) {
                 e = e.replace(/rn/g, "n");
                 var t = "";
                 for (var n = 0; n < e.length; n++) {
@@ -60,7 +60,7 @@ $(document).ready(function() {
                 }
                 return t
             },
-            _utf8_decode: function(e) {
+            _utf8_decode: function (e) {
                 var t = "";
                 var n = 0;
                 var r = c1 = c2 = 0;
@@ -117,7 +117,7 @@ $(document).ready(function() {
         }
 
         function DrawTable() {
-            $('.container-fluid').html("")
+            $('.bingoTable').html("")
             var itemBoxWidth = $(".container-fluid").width() / (settings.xBoxCount)
             var itemBoxHeight = ($(".container-fluid").height() / (settings.yBoxCount))
             timesPerRound = 0
@@ -137,9 +137,7 @@ $(document).ready(function() {
                         itemBox.css("border", settings.itemBoxBorderWidth + "px dotted rgba(0,0,0,0)")
                         itemBox.css("color", "rgba(0,0,0,0)")
                     }
-
-                    itemBox.css("line-height", (itemBoxHeight - (settings.itemBoxBorderWidth * 2) - 20) + "px")
-                    $('.container-fluid').append(itemBox)
+                    $('.bingoTable').append(itemBox)
                 }
             }
             boxLocation = { x: 1, y: 1 }
@@ -171,12 +169,16 @@ $(document).ready(function() {
             var v = { x: 1, y: 0 }
             for (r = 0; r < timesPerRound; r++) {
                 var itemBoxID = "itemBox_" + l.x + "_" + l.y
+                var textContent = "-"
                 if (settings.itemList.length > r) {
-                    $("#" + itemBoxID).text(settings.itemList[r])
+                    textContent = settings.itemList[r]
                 }
-                else {
-                    $("#" + itemBoxID).text("{Item.name}")
-                }
+
+                var textDiv = $('<div class="text"></div>')
+                textDiv.css("color", settings.textColor)
+                textDiv.css("font-size", settings.textSize + "px")
+                textDiv.text(textContent)
+                $("#" + itemBoxID).html('').append(textDiv)
 
                 if (l.x >= settings.xBoxCount && l.y <= 1) {
                     v.x = 0
@@ -239,22 +241,22 @@ $(document).ready(function() {
 
                 times -= 1
                 if (times > breakTimes.first) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         MakeAWish(times, breakTimes)
                     }, 50)
                 }
                 else if (times > breakTimes.second) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         MakeAWish(times, breakTimes)
                     }, 150)
                 }
                 else if (times > breakTimes.third) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         MakeAWish(times, breakTimes)
                     }, 400)
                 }
                 else {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         MakeAWish(times, breakTimes)
                     }, 1000)
                 }
@@ -262,6 +264,7 @@ $(document).ready(function() {
             else {
                 var itemBoxID = "itemBox_" + boxLocation.x + "_" + boxLocation.y
                 var itemBox = $("#" + itemBoxID).clone()
+                itemBox.css("width", "auto")
                 $('#bingo_modal').find(".modal-body").html("")
                 $('#bingo_modal').find(".modal-body").append(itemBox)
                 $('#bingo_modal').modal("show")
@@ -272,7 +275,7 @@ $(document).ready(function() {
 
         function transFormToObj(form) {
             var obj = {}
-            $.each(form.serializeArray(), function(i, item) {
+            $.each(form.serializeArray(), function (i, item) {
                 obj[item.name] = item.value
             })
             var itemListText = obj["itemList"]
@@ -293,7 +296,7 @@ $(document).ready(function() {
         }
 
         var isSpinning = false
-        $("body").on("click", "#spin", function() {
+        $("body").on("click", "#spin", function () {
             if (!isSpinning) {
                 isSpinning = true
                 var randRound = getRand(settings.turnsMin, settings.turnsMax)
@@ -311,10 +314,12 @@ $(document).ready(function() {
             }
         })
 
-        $("body").on("click", "#open-settings", function() {
-            $.each(settings, function(name, value) {
+        $("body").on("click", "#open-settings", function () {
+            $.each(settings, function (name, value) {
                 if (name == "itemList") {
                     $("#settings_modal").find("textarea[name=" + name + "]").val(value.join("\n"))
+                } else if (name == "bgVideoIsBlock") {
+                    $("#settings_modal").find("select[name=" + name + "]").val(value)
                 }
                 else {
                     $("#settings_modal").find("input[name=" + name + "]").val(value)
@@ -325,17 +330,17 @@ $(document).ready(function() {
             $("#settings_modal").modal("show")
         })
 
-        $("body").on("click", "#settings_save", function() {
+        $("body").on("click", "#settings_save", function () {
             settings = transFormToObj($("#bingoSettings"))
             var data = encodeURIComponent(Base64.encode(JSON.stringify(settings)))
             location.href = "/?data=" + data
         })
 
-        $("body").on("click", "#settings_default", function() {
+        $("body").on("click", "#settings_default", function () {
             location.href = "/"
         })
 
-        $("body").on("click", ".btnEditBoxText", function() {
+        $("body").on("click", ".btnEditBoxText", function () {
             var itemBoxID = $(this).attr("data-box-id")
             var content = $('#' + itemBoxID + '_text').val()
             var fontSize = $('#' + itemBoxID + '_size').val()
@@ -344,16 +349,16 @@ $(document).ready(function() {
             $("#" + itemBoxID).tooltip('hide')
         })
 
-        $("body").on("change", "#item_list", function() {
+        $("body").on("change", "#item_list", function () {
             var itemListCount = $('#item_list').val().split("\n").length
             updateItemListCount(itemListCount)
         })
 
-        $("body").on("click", "#clearCache", function() {
+        $("body").on("click", "#clearCache", function () {
             location.href = "/"
         })
 
-        $(".navbar-brand").click(function() {
+        $(".navbar-brand").click(function () {
             if ($(".container-fluid").hasClass("bg-dark")) {
                 $(".container-fluid").removeClass("bg-dark")
             }
@@ -362,7 +367,30 @@ $(document).ready(function() {
             }
         })
 
-        $(window).resize(function() {
+        $("#sound_status").click(function () {
+            if (settings.sound == "off") {
+                player.unMute()
+                settings.sound = "on"
+                $("#sound_status").text("Sound OFF")
+            } else {
+                player.mute()
+                settings.sound = "off"
+                $("#sound_status").text("Sound ON")
+            }
+        })
+
+        $("#shuffle_item").click(function(){
+            var itemList = []
+            for(i=0;i<settings.itemList.length;i++){
+                var item = settings.itemList[Math.floor(Math.random()*settings.itemList.length)]
+                itemList.push(item)
+            }
+            settings.itemList = itemList
+
+            PutItem()
+        })
+
+        $(window).resize(function () {
             DrawTable()
         })
 
@@ -407,28 +435,43 @@ $(document).ready(function() {
         }
 
         function onPlayerReady() {
-            if (settings.bgVideoIsBlock == "NO") {
+            if (settings.bgVideoIsBlock.toUpperCase() == "NO") {
                 $(".container-fluid ").removeClass("bg-dark")
             }
             else {
                 $(".container-fluid ").addClass("bg-dark")
             }
-        }
-        
-        setTimeout(function() {
-            var vID = GetURLParameter("v", settings.bgVideo)
-            if (!vID) {
-                vID = "U042f4kRa0I"
+
+            if (settings.sound && settings.sound == "off") {
+                player.mute()
+                $("#sound_status").text("Sound ON")
+            } else {
+                player.unMute()
+                $("#sound_status").text("Sound OFF")
             }
 
-            console.log(settings.bgVideo, GetURLParameter("v", settings.bgVideo), vID)
+            $(".loading").fadeOut(2000)
+
+            // $(".loading").animate({
+            //     height: 0,
+            //     top: "50%", // 100 + 50 / 2
+            //     left: "50%",
+            //     width: 0,
+            // }, 1500)
+        }
+
+        setTimeout(function () {
+            var vID = GetURLParameter("v", settings.bgVideo)
+            if (!vID) {
+                vID = "BahtnT13vH8"
+            }
             onYouTubeIframeAPIReady(vID)
-        }, 1000)
+        }, 2000)
     }
     catch (err) {
         console.log(err)
-        var text = "Find a problem！ You can click button name of 「Clear cache and reload」to fix it, It will 『reset settings to default』, or you can call Max！"
-        $('#alert_modal').find(".modal-body p").text(text)
+        var text = 'You can click button name of 「Clear cache and reload」to try to fix it, or you can feeback the issue to author\'s Github repo <a href="https://github.com/sherlockmax/RandomItemMachine/issues">LINK</a>！'
+        $('#alert_modal').find(".modal-body p").html(text)
         $("#alert_modal").modal("show")
     }
 })

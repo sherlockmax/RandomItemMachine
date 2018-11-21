@@ -8,6 +8,7 @@ body {
 
 .navbar {
     border-bottom: 1px dotted white;
+    z-index: 95;
 }
 
 .container-fluid {
@@ -23,6 +24,15 @@ body {
     color: white;
     font-size: 24px;
     vertical-align: middle;
+    overflow: hidden;
+}
+
+.item-box .text {
+    position: relative;
+    top:50%;
+    transform:translateY(-50%);
+    width: 100%;
+    overflow: hidden;
 }
 
 /* Style the video: 100% width and height to cover the entire window */
@@ -31,4 +41,33 @@ body {
     right: 0;
     bottom: 0;
     z-index: -99;
+}
+
+.loading {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    background: #172027;
+}
+
+.loading .item {
+    position: relative;
+    top:50%;
+    left: 50%;
+    transform:translateY(-50%) translateX(-50%);
+    width: 489px;
+    height: 289px;
+    z-index: 100;
+}
+
+.loading .item img {
+    width: 100%;
+    height: 100%;
+}
+
+.bg-dark {
+    background: #172027 !important;
 }
