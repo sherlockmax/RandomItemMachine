@@ -35,6 +35,16 @@ body {
     overflow: hidden;
 }
 
+.item-box-hide .text-sub-info {
+    position: relative;
+    top:100%;
+    transform:translateY(-100%);
+    width: 100%;
+    overflow: hidden;
+    font-size: 0.8em;
+    color: grey;
+}
+
 /* Style the video: 100% width and height to cover the entire window */
 #player {
     position: fixed;

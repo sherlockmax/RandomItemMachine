@@ -89,8 +89,7 @@ $(document).ready(function () {
         var player
         var settings = {}
         var timesPerRound = 0
-        var boxLocation = { x: 1, y: 1 }
-        var vector = { x: 1, y: 0 }
+        var boxIndex = 1
 
         function GetURLParameter(sParam, url) {
             var sPageURL = url.split("?")[1]
@@ -140,22 +139,24 @@ $(document).ready(function () {
                     $('.bingoTable').append(itemBox)
                 }
             }
+            boxIndex = 1
             boxLocation = { x: 1, y: 1 }
             vector = { x: 1, y: 0 }
 
-            // var spinBox = $("#itemBox_" + (settings.xBoxCount - 1) + "_" + (settings.yBoxCount - 1))
-            // spinBox.addClass("btn btn-danger text-white").attr("id", "spin").text("Spinning！")
+            var spinBox = $("#itemBox_" + (settings.xBoxCount - 1) + "_" + (settings.yBoxCount - 1))
+            var speedRate = $('<div class="text-sub-info"><span id="speedRate" >0.00</span> items/s</div>')
+            spinBox.addClass("item-box-hide")
+            spinBox.css("color", "white")
+            spinBox.append(speedRate)
 
-            // var settingBox = $("#itemBox_2_" + (settings.yBoxCount - 1))
-            // settingBox.addClass("btn btn-success text-white").attr("id", "open-settings").text("Settings")
+            $(".btn-info").css("background-color", settings.itemBoxBgColor)
+            $(".btn-info").css("border-color", settings.itemBoxBgColor)
+            $(".btn-info").css("color", settings.textColor)
 
-            // var soundBox = $("#itemBox_" + (settings.xBoxCount - 1) + "_2")
-            // soundBox.addClass("btn btn-primary text-white").attr("id", "toggle-sound").text("Sound")
-
-            var playerTop = 57 + itemBoxHeight
-            var playerLeft = itemBoxWidth
-            var playerWidth = itemBoxWidth * (settings.xBoxCount - 2)
-            var playerHeight = itemBoxHeight * (settings.yBoxCount - 2)
+            var playerTop = ( 57 + itemBoxHeight ) - 50
+            var playerLeft = itemBoxWidth - 25
+            var playerWidth = ( itemBoxWidth * (settings.xBoxCount - 2) ) + 50
+            var playerHeight = ( itemBoxHeight * (settings.yBoxCount - 2) ) + 100
             $("#player").css("top", playerTop + "px")
             $("#player").css("left", playerLeft + "px")
             $("#player").css("width", playerWidth + "px")
@@ -167,11 +168,11 @@ $(document).ready(function () {
         function PutItem() {
             var l = { x: 1, y: 1 }
             var v = { x: 1, y: 0 }
-            for (r = 0; r < timesPerRound; r++) {
+            for (r = 1; r <= timesPerRound; r++) {
                 var itemBoxID = "itemBox_" + l.x + "_" + l.y
                 var textContent = "-"
-                if (settings.itemList.length > r) {
-                    textContent = settings.itemList[r]
+                if (settings.itemList.length > r-1) {
+                    textContent = settings.itemList[r-1]
                 }
 
                 var textDiv = $('<div class="text"></div>')
@@ -179,6 +180,7 @@ $(document).ready(function () {
                 textDiv.css("font-size", settings.textSize + "px")
                 textDiv.text(textContent)
                 $("#" + itemBoxID).html('').append(textDiv)
+                $("#" + itemBoxID).attr("data-box-index", r)
 
                 if (l.x >= settings.xBoxCount && l.y <= 1) {
                     v.x = 0
@@ -206,64 +208,56 @@ $(document).ready(function () {
             }
         }
 
-        function MakeAWish(times, breakTimes) {
+        var maxTimes = 0
+        function MakeAWish(times) {
+            if (times > maxTimes) {
+                maxTimes = times
+            }
             if (times > 0) {
-                var newboxLocation = {
-                    x: boxLocation.x + vector.x,
-                    y: boxLocation.y + vector.y
-                }
-                var itemBoxID = "itemBox_" + boxLocation.x + "_" + boxLocation.y
-                var newItemBoxID = "itemBox_" + newboxLocation.x + "_" + newboxLocation.y
-
-                removeActive($("#" + itemBoxID))
-                addActive($("#" + newItemBoxID))
-
-                boxLocation = newboxLocation
-                if (boxLocation.x >= settings.xBoxCount && boxLocation.y <= 1) {
-                    vector.x = 0
-                    vector.y = 1
+                var newBoxIndex = boxIndex + 1
+                if (newBoxIndex > timesPerRound) {
+                    newBoxIndex = 1
                 }
 
-                if (boxLocation.y >= settings.yBoxCount && boxLocation.x >= settings.xBoxCount) {
-                    vector.x = -1
-                    vector.y = 0
-                }
+                var oldBox = $("div[data-box-index="+boxIndex+"]")
+                var newBox = $("div[data-box-index="+newBoxIndex+"]")
 
-                if (boxLocation.x <= 1 && boxLocation.y >= settings.yBoxCount) {
-                    vector.x = 0
-                    vector.y = -1
-                }
+                removeActive(oldBox)
+                addActive(newBox)
 
-                if (boxLocation.x <= 1 && boxLocation.y <= 1) {
-                    vector.x = 1
-                    vector.y = 0
-                }
+                boxIndex = newBoxIndex
 
                 times -= 1
-                if (times > breakTimes.first) {
-                    setTimeout(function () {
-                        MakeAWish(times, breakTimes)
-                    }, 50)
+                var minSpeed = Math.floor(1000 / settings.fastestSpeed)
+                var maxSpeed = Math.floor(1000 / settings.slowestSpeed)
+                var slowdownProgress = settings.slowDown
+                var progress = Math.floor( (times / maxTimes) * 100)
+                var speed = minSpeed
+                if(progress < slowdownProgress) {
+                    var slowdownProgressMaxTimes = Math.floor((maxTimes * slowdownProgress) / 100)
+                    var slowdownProgressProgress = Math.floor( (times / slowdownProgressMaxTimes) * 100)
+                    speed = maxSpeed - Math.floor((maxSpeed * slowdownProgressProgress) / 100)
+                    console.log(times + "/"+ slowdownProgressMaxTimes, slowdownProgressProgress + " %", speed + " ms", parseFloat(1000 / speed).toFixed(2) + " / s")
+                }else{
+                    console.log(times + "/"+ maxTimes, progress + " %", speed + " ms", parseFloat(1000 / speed).toFixed(2) + " / s")
                 }
-                else if (times > breakTimes.second) {
-                    setTimeout(function () {
-                        MakeAWish(times, breakTimes)
-                    }, 150)
+                if (speed > maxSpeed) {
+                    speed = maxSpeed
                 }
-                else if (times > breakTimes.third) {
-                    setTimeout(function () {
-                        MakeAWish(times, breakTimes)
-                    }, 400)
+                if (speed < minSpeed) {
+                    speed = minSpeed
                 }
-                else {
-                    setTimeout(function () {
-                        MakeAWish(times, breakTimes)
-                    }, 1000)
-                }
+
+                var speedRate = parseFloat(1000 / speed).toFixed(2)
+                $("#speedRate").text(speedRate)
+                
+                setTimeout(function () {
+                    MakeAWish(times)
+                }, speed)
             }
             else {
-                var itemBoxID = "itemBox_" + boxLocation.x + "_" + boxLocation.y
-                var itemBox = $("#" + itemBoxID).clone()
+                $("#speedRate").text("0.00")
+                var itemBox = $("div[data-box-index="+boxIndex+"]").clone()
                 itemBox.css("width", "auto")
                 $('#bingo_modal').find(".modal-body").html("")
                 $('#bingo_modal').find(".modal-body").append(itemBox)
@@ -300,17 +294,12 @@ $(document).ready(function () {
             if (!isSpinning) {
                 isSpinning = true
                 var randRound = getRand(settings.turnsMin, settings.turnsMax)
-                var randSeed = getRand(0, timesPerRound)
-                var result = (timesPerRound * randRound) + randSeed
-                var breakTimes = {
-                    first: getRand(10, 15),
-                    second: getRand(6, 9),
-                    third: getRand(3, 5),
-                }
-
-                console.log(settings, "randRound", randRound, "randSeed", randSeed, "timesPerRound", timesPerRound, "breakTimes", breakTimes)
+                var randSeed = getRand(1, timesPerRound)
+                var result = (timesPerRound * randRound) + (timesPerRound - boxIndex) + randSeed
+                console.log("randRound("+settings.turnsMin+"~"+settings.turnsMax+"):", randRound, " randSeed(1~"+timesPerRound+"):", randSeed, " result:", result)
+                maxTimes = 0
                 player.playVideo()
-                MakeAWish(result, breakTimes)
+                MakeAWish(result)
             }
         })
 
@@ -380,14 +369,23 @@ $(document).ready(function () {
         })
 
         $("#shuffle_item").click(function(){
+            $(".loading").show()
+            var oldItemList = settings.itemList
             var itemList = []
-            for(i=0;i<settings.itemList.length;i++){
-                var item = settings.itemList[Math.floor(Math.random()*settings.itemList.length)]
-                itemList.push(item)
+            for(;;){
+                var randIndex = getRand(0, oldItemList.length-1)
+                if($.inArray(oldItemList[randIndex], itemList) < 0){
+                    console.log(randIndex, oldItemList[randIndex])
+                    itemList.push(oldItemList[randIndex])
+                }
+                if(itemList.length == oldItemList.length){
+                    break
+                }
             }
             settings.itemList = itemList
 
             PutItem()
+            $(".loading").fadeOut(1500)
         })
 
         $(window).resize(function () {
@@ -396,6 +394,8 @@ $(document).ready(function () {
 
         settings = GetURLParameter("data", "")
         if (!settings) {
+            itemList = ["Avocado","Banana","Carambola","Durian","Elderberry","Figs","Guava","Honeydew Melon","Indian Prune","Jackfruit","Kiwifruit","Lychee","Mango","Nectarine","Orange","Pitaya","Quince","Rambutan","Sugar-Apple","Tangerine","Ugli fruit","Voavanga","Watermelon","Xigua","Yangmei","Zuchinni"]
+            $("#item_list").val(itemList.join("\r\n"))
             settings = transFormToObj($("#bingoSettings"))
             console.log("Load settings from [form]: ", settings)
         }
@@ -450,7 +450,7 @@ $(document).ready(function () {
                 $("#sound_status").text("Sound OFF")
             }
 
-            $(".loading").fadeOut(2000)
+            $(".loading").fadeOut(1500)
 
             // $(".loading").animate({
             //     height: 0,

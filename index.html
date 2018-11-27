@@ -38,18 +38,18 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a id="open-settings" class="nav-link text-info" href="#">Settings</a>
+                    <button id="open-settings" class="btn btn-info mr-1">Settings</button>
                 </li>
                 <li class="nav-item">
-                    <a id="sound_status" class="nav-link text-info" href="#">Sound OFF</a>
+                    <button id="sound_status" class="btn btn-info mr-1">Sound OFF</button>
                 </li>
                 <li class="nav-item">
-                    <a id="shuffle_item" class="nav-link text-info" href="#">Shuffle Item</a>
+                    <button id="shuffle_item" class="btn btn-info mr-1">Shuffle Item</button>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a id="spin" class="nav-link text-warning" href="#">Spinning</a>
+                    <button id="spin" class="btn btn-warning">Spin</button>
                 </li>
             </ul>
         </div>
@@ -175,34 +175,23 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="fastest_speed">Fastest Speed (items/sec)</label>
+                                <input type="number" min="5" class="form-control form-control-sm" id="fastest_speed" name="fastestSpeed" value="20">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="slowest_speed">Slowest Speed (items/sec)</label>
+                                <input type="number" min="1" class="form-control form-control-sm" id="slowest_speed" name="slowestSpeed" value="1">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="slow_down">Slow down when left (%) items</label>
+                                <input type="number" min="0" class="form-control form-control-sm" id="slow_down" name="slowDown" value="10">
+                            </div>
+                        </div>
+                        <div class="form-row">
                             <div class="form-group col-md-12">
                                 <label for="item_list">Item list (A item per line)&nbsp;&nbsp;[<span id="item_list_count"></span>]</label>
-                                <textarea class="form-control" id="item_list" name="itemList" rows="5">Avocado
-Banana
-Carambola
-Durian
-Elderberry
-Figs
-Guava
-Honeydew Melon
-Indian Prune
-Jackfruit
-Kiwifruit
-Lychee
-Mango
-Nectarine
-Orange
-Pitaya
-Quince
-Rambutan
-Sugar-Apple
-Tangerine
-Ugli fruit
-Voavanga
-Watermelon
-Xigua
-Yangmei
-Zuchinni</textarea>
+                                <textarea class="form-control" id="item_list" name="itemList" rows="5"></textarea>
                             </div>
                         </div>
                         <div class="form-row">
